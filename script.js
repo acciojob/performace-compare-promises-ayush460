@@ -12,4 +12,52 @@ const apiUrls = [
   "https://jsonplaceholder.typicode.com/todos/10",
 ];
 
-// You can write your code here
+// Function to fetch data from an API URL
+async function fetchData(url) {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
+
+// Function to display the time taken for each method on the webpage
+function displayTimeTaken(method, time) {
+  const outputElement = document.getElementById(`output-${method}`);
+  outputElement.textContent = `${time} ms`;
+}
+
+// Function to fetch data using Promise.all and measure the time taken
+function fetchWithPromiseAll() {
+  const startTime = performance.now();
+
+  Promise.all(apiUrls.map(fetchData))
+    .then((results) => {
+      const endTime = performance.now();
+      const timeTaken = endTime - startTime;
+      displayTimeTaken("all", timeTaken.toFixed(2));
+      console.log("Promise.all:", results);
+    })
+    .catch((error) => {
+      console.error("Promise.all Error:", error);
+    });
+}
+
+// Function to fetch data using Promise.any and measure the time taken
+function fetchWithPromiseAny() {
+  const startTime = performance.now();
+
+  Promise.any(apiUrls.map(fetchData))
+    .then((result) => {
+      const endTime = performance.now();
+      const timeTaken = endTime - startTime;
+      displayTimeTaken("any", timeTaken.toFixed(2));
+      console.log("Promise.any:", result);
+    })
+    .catch((error) => {
+      console.error("Promise.any Error:", error);
+    });
+}
+
+// Call the functions to fetch data and display results
+fetchWithPromiseAll();
+fetchWithPromiseAny();
+
